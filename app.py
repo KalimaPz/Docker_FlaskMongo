@@ -16,11 +16,29 @@ def index():
     return render_template('index.html')
 @app.route('/api/person/get_all',methods=['GET'])
 def getAllStudents():
-    # person.insert_one({
-    #     "first_name" : "Donnukrit",
-    #     "last_name" : "Satirakul"
-    # })
-    return jsonify({"msg":"Hello World2"})
+    data = []
+    for list in person.find() :
+        data.append(
+            {
+                'first_name' : list['first_name'],
+                'last_name' : list['last_name'],
+                'faculty' : list['faculty'],
+                'major' : list['major'],
+                'home' : list['home']
+            }
+        )
+    return jsonify(data)
+@app.route('/api/person/get/<name>',methods=['GET'])
+def getFromName(name) :
+    list = person.find_one({'first_name' : name})
+    _person = {
+        'first_name' : list['first_name'],
+        'last_name' : list['last_name'],
+        'faculty' : list['faculty'],
+        'major' : list['major'],
+        'home' : list['home']
+    }
+    return jsonify(_person)
 @app.route('/api/person/add',methods=['POST'])
 def add_new():
     data = request.get_json()
